@@ -1,0 +1,14 @@
+/migrations/
+/.idea/
+*/*.pyc
+*.pyc
+/.idea
+/crm/__pycache__
+/crm/migrations
+/PerfectCRM3/__pycache__
+/kingadmin/__pycache__
+/kingadmin/migrations
+/student/__pycache__
+/student/migrations
+__pycache__
+migrations
