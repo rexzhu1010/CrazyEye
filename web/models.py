@@ -158,6 +158,24 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
         return self.name
 
 
+class AuditLog(models.Model):
+        """存储审计日志"""
+        user = models.ForeignKey("UserProfile",verbose_name="堡垒机帐号",on_delete=models.CASCADE)
+        host_to_remote_user = models.ForeignKey("HostToRemoteUser",on_delete=models.CASCADE)
+        log_type_choice = ((0,'login'),(1,'cmd'),(2,'logout'))
+        log_type =models.SmallIntegerField(choices=log_type_choice)
+        content = models.CharField(max_length=255)
+        date =models.DateTimeField(auto_now_add=True)
+
+        class Meta:
+            verbose_name="存储审计日志表"
+        def __str__(self):
+            return "%s %s"%(self.user,self.content)
+
+
+
+
+
 
 
 

@@ -1,12 +1,14 @@
 # rex.zhu
 
 from django.contrib.auth import  authenticate
+from backend import  paramiko_ssh
+from web import  models
 
 class SshHandler(object):
     """启堡垒机交互脚本"""
     def __init__(self,argv_handler_instance):
         self.argv_handler_instance = argv_handler_instance
-
+        self.models = models
     def auth(self):
         """认证程序"""
         count = 0
@@ -57,6 +59,9 @@ class SshHandler(object):
                             choice = int(choice)
                             selected_host_to_user_obj = selected_host_group.host_to_remote_users.all()[choice]
                             print("going to logon %s"%selected_host_to_user_obj.remote_user)
+                            paramiko_ssh.ssh_connect(self,
+                                                     selected_host_to_user_obj
+                                                     )
                         elif choice == "q":
                             break
                         elif choice == "e":
