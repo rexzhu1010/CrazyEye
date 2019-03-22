@@ -15,7 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
+from django.conf.urls import url
+from web import  views
 urlpatterns = [
     path('admin/', admin.site.urls),
+    url(r"^$",views.dashboard,name="dashboard"),
+    url(r"^web_ssh/*$",views.web_ssh,name="web_ssh"),
+    url(r"login/*$",views.login_acc,name="login_acc"),
+    url(r"logout/*$",views.logout_acc,name="logout_acc"),
+    url(r"^host_mgr/*$",views.host_mgr,name="host_mgr"),
+    url(r"^batch_task_mgr/*$",views.batch_task_mgr,name="batch_task_mgr"),
+
+
 ]

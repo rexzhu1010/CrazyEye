@@ -175,6 +175,29 @@ class AuditLog(models.Model):
 
 
 
+class Task(models.Model):
+    """批量任务，大任务"""
+    task_type_choices =  (("cmd",'批量命令'),("file_transfer","文件传输"))
+    task_type = models.CharField(choices=task_type_choices,max_length=64)
+    content = models.CharField(max_length=255,verbose_name="任务内容")
+    user = models.ForeignKey("UserProfile",on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "%s %s"%(self.task_type,self.content)
+
+
+class TaskLogDetail(models.Model):
+    """存储大任务子结果"""
+    task = models.ForeignKey("Task",on_delete=models.CASCADE)
+    host_to_remote_user = models.ForeignKey("HostToRemoteUser",on_delete=models.CASCADE)
+    result = models.TextField(verbose_name="任务执行结果",blank=True,null=True)
+    date = models.DateTimeField(auto_now_add=True)
+    status_choices = ((0,"initialized"),(1,"sucess"),(2,"failed"),(3,"timeout"))
+    status = models.SmallIntegerField(choices=status_choices,default=0)
+    def __str__(self):
+        return "%s %s"%(self.task,self.host_to_remote_user)
+
 
 
 
