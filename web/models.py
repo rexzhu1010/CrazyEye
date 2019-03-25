@@ -153,9 +153,9 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_active
-
+    #
     def __str__(self):
-        return self.name
+        return "%s"%self.name
 
 
 class AuditLog(models.Model):

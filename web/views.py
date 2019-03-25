@@ -51,7 +51,13 @@ def batch_task_mgr(request):
     print(task_data)
     task_obj = MultiTaskManager(request)
 
-    return  HttpResponse(task_obj.task_id)
+    response = {
+        'task_id':task_obj.task_obj.id,
+        "selected_hosts":list(task_obj.task_obj.tasklogdetail_set.all().values("id","host_to_remote_user__host__name","host_to_remote_user__host__ip_addr","host_to_remote_user__remote_user__username"))
+
+    }
+
+    return  HttpResponse(json.dumps(response))
 
 
 

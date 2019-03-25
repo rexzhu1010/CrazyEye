@@ -65,7 +65,7 @@ class MultiTaskManager(object):
         print("执行subprocess")
         subprocess.Popen(task_script,shell=True)
 
-        self.task_id = task_obj.id
+        self.task_obj = task_obj
 
 
 

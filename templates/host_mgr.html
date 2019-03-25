@@ -52,6 +52,19 @@
                 <input type="button" class="btn btn-success pull-right" value="执行命令" onclick="PostTask()">
             </div>
         </div>
+
+        <div class="panel col-sm-8" style="margin-left: 10px">
+            <div class="panel-heading">
+                <h3 class = "panel-title">任务结果</h3>
+            </div>
+
+            <div class="panel-body" id="task_result_container">
+
+            </div>
+        </div>
+
+
+
     </div>
 <script>
 
@@ -93,6 +106,17 @@
             $.post("{% url 'batch_task_mgr' %}",{"task_data":JSON.stringify(task_arguments),
                 'csrfmiddlewaretoken':csrf_token},function(callback){
                 console.log("task_callback",callback)
+                callback = JSON.parse(callback)
+                $.each(callback.selected_hosts,function (index,ele) {
+                    var li_ele = "<li>Host:" + ele.host_to_remote_user__host__name + "(" + ele.host_to_remote_user__host__ip_addr + ") -----------</li>"
+                    li_ele += "<pre> waiting for result </pre>"
+                    $("#task_result_container").append(li_ele)
+
+
+                  })
+
+
+
             })
 
 
