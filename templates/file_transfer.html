@@ -1,0 +1,12 @@
+{% extends "index.html" %}
+
+
+
+{% block page-content %}
+    {% csrf_token %}
+    <div class="row">
+        {% include 'host_list_component.html' %}
+
+    </div>
+
+{% endblock %}

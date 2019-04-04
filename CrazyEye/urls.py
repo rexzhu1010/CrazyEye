@@ -23,8 +23,10 @@ urlpatterns = [
     url(r"^web_ssh/*$",views.web_ssh,name="web_ssh"),
     url(r"login/*$",views.login_acc,name="login_acc"),
     url(r"logout/*$",views.logout_acc,name="logout_acc"),
-    url(r"^host_mgr/*$",views.host_mgr,name="host_mgr"),
+    url(r"^host_mgr/cmd/*$",views.host_mgr,name="batch_cmd"),
+    url(r"^host_mgr/file_transfer/*$",views.file_transfer,name="file_transfer"),
     url(r"^batch_task_mgr/*$",views.batch_task_mgr,name="batch_task_mgr"),
+    url(r"^get_task_result/*$",views.get_task_result,name="get_task_result"),
 
 
 ]

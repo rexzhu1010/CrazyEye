@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 import json
 
 from backend.multitask import MultiTaskManager
+from web import  models
 
 
 # Create your views here.
@@ -58,6 +59,24 @@ def batch_task_mgr(request):
     }
 
     return  HttpResponse(json.dumps(response))
+
+
+def get_task_result(request):
+    task_id = request.GET.get("task_id")
+
+    sub_tasklog_objs = models.TaskLogDetail.objects.filter(task_id=task_id)
+
+    log_data =  list(sub_tasklog_objs.values("id",'status','result'))
+
+    return HttpResponse(json.dumps(log_data))
+
+
+
+def file_transfer(request):
+
+    return render(request,"file_transfer.html")
+
+
 
 
 

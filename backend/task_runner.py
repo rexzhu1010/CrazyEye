@@ -17,24 +17,30 @@ def ssh_cmd(sub_task_obj):
                     port=host_to_user_obj.host.port,
                     username=host_to_user_obj.remote_user.username,
                     password=host_to_user_obj.remote_user.password,
+                    timeout=3,
                     )
+
+        stdin,stdout,stderr = ssh.exec_command(task_obj.content)
+        print("在执行sub_cmd3")
+        stdout_res = stdout.read()
+        stderr_res = stderr.read()
+
+        result = stdout_res + stderr_res
+        sub_task_obj.result = result.decode()
+
+        print("----------------result--------------- \r\n", sub_task_obj.result)
+        if stderr_res:
+            sub_task_obj.status = 2
+        else:
+            sub_task_obj.status = 1
+
     except Exception as e:
-        print(e)
+        sub_task_obj.status = 2
+        sub_task_obj.result = e
 
-    stdin,stdout,stderr = ssh.exec_command(task_obj.content)
-    print("在执行sub_cmd3")
-    stdout_res = stdout.read()
-    stderr_res = stdout.read()
 
-    #task_log_obj =  models.TaskLogDetail.objects.get(task=task_obj,host_to_remote_user_id=host_to_user_obj.id)
-    result = stdout_res + stderr_res
-    sub_task_obj.result =  result.decode()
+    # task_log_obj =  models.TaskLogDetail.objects.get(task=task_obj,host_to_remote_user_id=host_to_user_obj.id)
 
-    print("----------------result--------------- \r\n",sub_task_obj.result)
-    if  stderr_res:
-        sub_task_obj.status =2
-    else:
-        sub_task_obj.status=1
 
     sub_task_obj.save()
     ssh.close()
