@@ -7,6 +7,45 @@
     <div class="row">
         {% include 'host_list_component.html' %}
 
+        <div class="panel col-sm-8" style="margin-left: 10px">
+
+                <div class="panel-heading">
+                    <h3 class = "panel-title">文件分发</h3>
+                </div>
+
+                <div class ="panel-body">
+                        <select class="form-control" onchange="CheckFileTranfer(this)" id="file_transfer_type">
+                            <option value="send">向远程发送文件</option>
+                            <option value="get">从远程下载文件</option>
+                        </select>
+                        <input type="text" id="local_file_path" class="form-control" placeholder="本地文件目录">
+                        <input type="text" id="remote_file_path" class="form-control" placeholder="远程文件目录">
+                        <input id="run_button" type="button" class="btn btn-success pull-right" value="执行" onclick="PostTask(this,'file_transfer')">
+
+                </div>
+                {% include 'task_result_component.html' %}
+        </div>
     </div>
+
+
+     {% include 'multitask_js_component.html' %}
+
+
+    <script>
+         function  CheckFileTranfer(ele) {
+
+             if ($(ele).val() == "get"){
+                  $("#remote_file_path").addClass("hide")
+             }else{
+                 $("#remote_file_path").removeClass("hide")
+
+             }
+
+
+
+         }
+
+    </script>
+
 
 {% endblock %}

@@ -1,0 +1,133 @@
+<script>
+
+        function PostTask(self,task_type) {
+
+            var selected_host_ids=[];
+            $("[tag='host-select']:checked").each(function () {
+               selected_host_ids.push( $(this).val())
+            })
+            console.log(selected_host_ids)
+            if (selected_host_ids.length == 0){
+                alert("必须选择主机")
+                return false
+            }
+
+            if (task_type == 'cmd'){
+                var cmd_text = $("#cmd_input").val().trim();
+                if (cmd_text.length == 0){
+                    alert("必须输入命令！")
+                    return false
+                }
+
+                console.log("开始执行",selected_host_ids)
+                var task_arguments = {
+                    'selected_hosts':selected_host_ids,
+                    'task_type':'cmd',
+                    'cmd':cmd_text,
+
+                }
+
+            }
+
+            if (task_type == 'file_transfer'){
+                    var local_file_path= $("#local_file_path").val()
+                    var remote_file_path=$("#remote_file_path").val()
+                    var file_transfer_type= $("#file_transfer_type").val()
+
+                    if (file_transfer_type == 'send'){
+
+                        if (local_file_path.length == 0 ){
+                            alert("必须输入本地路径！！！")
+                            return false
+                        }
+
+
+                    }
+
+                     if (remote_file_path.length==0){
+                         alert ("必须输入远程服务器的路径")
+                         return false
+                     }
+
+
+                console.log("开始执行file_transfer",selected_host_ids)
+                var task_arguments = {
+                    'selected_hosts':selected_host_ids,
+                    'task_type':'file_transfer',
+                    'file_transfer_type':file_transfer_type,
+                    'local_file_path':local_file_path,
+                    'remote_file_path':remote_file_path,
+
+                }
+
+
+            }
+
+
+
+
+
+            //禁用提交按钮
+            $(self).addClass("disabled");
+            $("#task_result_container").empty();
+
+            csrf_token=$("input[name=csrfmiddlewaretoken]").val()
+            $.post("{% url 'batch_task_mgr' %}",{"task_data":JSON.stringify(task_arguments),
+                'csrfmiddlewaretoken':csrf_token},function(callback){
+                console.log("task_callback",callback)
+                callback = JSON.parse(callback)
+                $.each(callback.selected_hosts,function (index,ele) {
+                    var li_ele = "<li log_id='" + ele.id +"'>Host:" + ele.host_to_remote_user__host__name + "(" + ele.host_to_remote_user__host__ip_addr + ") -----------<span style='color:green'></span></li>"
+                    li_ele += "<pre> waiting for result </pre>"
+                    $("#task_result_container").append(li_ele)
+                  });
+
+                //start to get result..........
+                ResultRefreshObj = setInterval(function () {
+
+                    GetTaskResult(callback.task_id);
+
+
+                 },2000)
+
+
+
+
+            })
+
+
+
+        }
+
+        function GetTaskResult(task_id){
+
+            $.getJSON("{% url 'get_task_result' %}",{'task_id':task_id},function(callback){
+
+                console.log(callback)
+
+                var all_task_done = true
+
+                $.each(callback,function (index,ele) {
+                    var li_ele  = $("li[log_id="+ ele.id +"]");
+
+                    li_ele.children().first().text(ele.status)
+                    li_ele.next().text(ele.result)
+
+                    if (ele.status == 0){
+                        all_task_done=false
+                    }
+
+                 })
+
+                if (all_task_done){
+                    clearInterval(ResultRefreshObj);
+                    $("#run_button").removeClass("disabled")
+                    console.log("--------------------all task done ------------------------")
+                }
+
+             }) ;   //end getJSON
+
+
+        }
+
+</script>

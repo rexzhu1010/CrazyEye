@@ -68,5 +68,30 @@ class MultiTaskManager(object):
         self.task_obj = task_obj
 
 
+    def file_transfer(self):
+        """文件分发"""
+        task_obj = models.Task.objects.create(
+            task_type= 'file_transfer',
+            content =  json.dumps(self.task_data),
+            user = self.request.user
+        )
+
+        selected_host_ids= set(self.task_data["selected_hosts"])
+
+        task_log_objs=[]
+        for id in selected_host_ids:
+            task_log_objs.append(
+            models.TaskLogDetail(task=task_obj,host_to_remote_user_id=id,result="init...")
+            )
+
+        #把上面的对象列表放进来，批量写入娄据库
+        models.TaskLogDetail.objects.bulk_create(task_log_objs)
+
+        task_script = "python %s/backend/task_runner.py %s"%(conf.settings.BASE_DIR,task_obj.id)
+
+        print("执行subprocess file_transfer")
+        subprocess.Popen(task_script,shell=True)
+
+        self.task_obj = task_obj
 
 

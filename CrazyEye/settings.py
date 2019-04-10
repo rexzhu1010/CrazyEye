@@ -127,3 +127,6 @@ STATICFILES_DIRS = (
 AUTH_USER_MODEL =  'web.UserProfile'
 
 LOGIN_URL = 'login'
+
+
+DOWNLOAD_DIR = "%s/download/"%BASE_DIR
